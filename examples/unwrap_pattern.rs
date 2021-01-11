@@ -20,6 +20,6 @@ fn main() {
         _q: 8.0,
         r: 7,
     };
-    let complex: usize = unwrap_pattern!(some_enum, T::C{p: var3, r: _var4, ..}=> var3);
+    let complex: usize = unwrap_pattern!(some_enum, T::C{p: var3, r: _var4, ..} => var3);
     assert_eq!(complex, 9);
 }

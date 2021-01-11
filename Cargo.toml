@@ -9,6 +9,7 @@ repository = "https://github.com/elbaro/flowutils"
 documentation = "https://docs.rs/flowutils"
 
 [dependencies]
+anyhow = "1.0.38"
 proc-macro2 = "1.0.24"
 quote = "1.0.8"
 syn = {version="1.0.58", features=["full"]}

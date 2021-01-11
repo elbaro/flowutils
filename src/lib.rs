@@ -123,7 +123,7 @@ pub fn try_pattern(token_stream: TokenStream) -> TokenStream {
         match #expr {
             #arm,
             // TODO: _ => Err(flowutils::TryPatternError),
-            _ => Err("try_pattern() failed"),
+            _ => Err(anyhow::anyhow!("try_pattern() failed")),
         }
     })
     .into()
