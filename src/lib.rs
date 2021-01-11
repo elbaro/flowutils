@@ -2,7 +2,7 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 /// Golang's `defer` in Rust.
-/// 
+///
 /// - This is scoped. A deferred action is performed at the end of the scope, not the end of the function.
 /// - Multiple `defer!`s are executed in the reverse order.
 ///
@@ -26,7 +26,7 @@ pub fn defer(token_stream: TokenStream) -> TokenStream {
     let name = format!("__flowutils_{}", uid).replace('-', "_");
     let defer_guard_type = syn::Ident::new(&name, proc_macro2::Span::call_site());
     let defer_guard_var = syn::Ident::new(&format!("{}_", &name), proc_macro2::Span::call_site());
-    (quote::quote!{
+    (quote::quote! {
         struct #defer_guard_type;
         impl Drop for #defer_guard_type {
             fn drop(&mut self) {
@@ -34,13 +34,13 @@ pub fn defer(token_stream: TokenStream) -> TokenStream {
             }
         }
         let #defer_guard_var = #defer_guard_type;
-    }).into()
-    
+    })
+    .into()
 }
 
 fn parse_unwrap(input: syn::parse::ParseStream) -> syn::Result<(syn::Expr, syn::Arm)> {
-    let expr:syn::Expr = input.parse()?;
-    let _:  syn::Token![,] = input.parse()?;
+    let expr: syn::Expr = input.parse()?;
+    let _: syn::Token![,] = input.parse()?;
     let arm: syn::Arm = input.parse()?;
     Ok((expr, arm))
 }
@@ -48,7 +48,7 @@ fn parse_unwrap(input: syn::parse::ParseStream) -> syn::Result<(syn::Expr, syn::
 /// A short version of `if let` when you already know the pattern.
 ///
 /// Returns the inner value or panics.
-/// For a complex enum variant, 
+/// For a complex enum variant,
 ///
 /// Example:
 ///
@@ -72,12 +72,13 @@ fn parse_unwrap(input: syn::parse::ParseStream) -> syn::Result<(syn::Expr, syn::
 pub fn unwrap_pattern(token_stream: TokenStream) -> TokenStream {
     let (expr, arm) = syn::parse_macro_input!(token_stream with parse_unwrap);
 
-    (quote::quote!{
+    (quote::quote! {
         match #expr {
             #arm,
             _ => panic!("unwrap(..) failed"),
         }
-    }).into()
+    })
+    .into()
 }
 
 // #[derive(Debug, Clone)]
@@ -88,7 +89,6 @@ pub fn unwrap_pattern(token_stream: TokenStream) -> TokenStream {
 //         write!(f, "let() pattern-match failed")
 //     }
 // }
-
 
 /// Similar to `unwrap_pattern` but returns Result<_, &str>.
 ///
@@ -118,12 +118,13 @@ pub fn try_pattern(token_stream: TokenStream) -> TokenStream {
     arm.body = syn::parse_quote! {
         Ok(#old_body)
     };
-    
-    (quote::quote!{
+
+    (quote::quote! {
         match #expr {
             #arm,
             // TODO: _ => Err(flowutils::TryPatternError),
             _ => Err("try_pattern() failed"),
         }
-    }).into()
+    })
+    .into()
 }
